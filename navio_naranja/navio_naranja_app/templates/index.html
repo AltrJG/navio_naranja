@@ -1,0 +1,252 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navío Naranja</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #d2d2d2;
+            background-image:
+                repeating-linear-gradient(
+                    to right, transparent 0 100px,
+                    #25283b22 100px 101px
+                ),
+                repeating-linear-gradient(
+                    to bottom, transparent 0 100px,
+                    #25283b22 100px 101px
+                );
+            height: 100vh;
+            position: relative;
+        }
+    
+        body::before {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    content: '';
+    background-image: url("{% static 'images/bgcover.png' %}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: zoomAndBlur 15s infinite alternate;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes zoomAndBlur {
+    0% {
+        transform: scale(1);
+        filter: blur(5px) brightness(1.2);
+        opacity: 0.8;
+        background-position: center;
+    }
+    50% {
+        transform: scale(1.1);
+        filter: blur(0px) brightness(0.8);
+        opacity: 0.5;
+        background-position: 10% 10%;
+    }
+    100% {
+        transform: scale(1);
+        filter: blur(5px) brightness(1.2);
+        opacity: 0.8;
+        background-position: center;
+    }
+}
+
+.banner::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 230px;
+    background: linear-gradient(to top, rgba(255, 165, 0, 0.6), rgba(255, 165, 0, 0) 70%);
+    clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);
+    animation: wave 4s ease-in-out infinite;
+    z-index: 2;
+    opacity: 1;
+}
+
+@keyframes wave {
+    0%, 100% {
+        clip-path: polygon(
+            0% 47%,
+            10% 48%,
+            33% 54%,
+            54% 60%,
+            70% 61%,
+            84% 59%,
+            100% 52%,
+            100% 100%,
+            0% 100%
+        );
+    }
+  
+    50% {
+        clip-path: polygon(
+            0% 60%,
+            15% 65%,
+            34% 66%,
+            51% 62%,
+            67% 50%,
+            84% 45%,
+            100% 46%,
+            100% 100%,
+            0% 100%
+        );
+    }
+}
+    
+        body {
+            z-index: 0;
+        }
+
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        body {
+            background: black;
+            color: white;
+        }
+
+        .container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title {
+            font-size: 96px;
+        }
+
+        .content {
+            height: 100vh;
+            display: grid;
+            place-items: center;
+
+            z-index: 5;
+            position: relative;
+        }
+
+        .fuzzy-overlay {
+            position: absolute;
+            inset: -200%;
+            background-image: url("{% static 'images/noise.png' %}");
+            opacity: 25%;
+            z-index: 0;
+            /* pointer-events: none; */
+
+            animation: shift 0.2s linear infinite both;
+        }
+
+        @keyframes shift {
+            0% {
+                transform: translateX(10%) translateY(10%);
+            }
+
+            100% {
+                transform: translateX(-10%) translateY(-10%);
+            }
+        }
+
+    </style>
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    
+    <nav>
+        <input type="checkbox" id="sidebar-active">
+        <label for="sidebar-active" class="open-sidebar-button">
+          <svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32"><path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>
+        </label>
+        <label id="overlay" for="sidebar-active"></label>
+        <div class="links-container">
+          <label for="sidebar-active" class="close-sidebar-button">
+            <svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+          </label>
+    
+          <div class="home-title">
+            <img src="{% static 'images/icon.svg' %}" alt="Icono de la página" class="page-icon">
+            <span>Navío Naranja</span>
+        </div>
+
+          <a href="#">About</a> 
+          <a href="#">FAQ</a>
+          <a href="#">Contacto</a>
+          <a href="#">Inicio</a>
+          
+        </div>
+      </nav>
+
+
+    <div class="banner">
+        <div class="content">
+            <div class="fuzzy-overlay"></div>
+            <h1 class="glitch" data-content="NAVÍO NARANJA">
+                <span aria-hidden="true">NAVÍO NARANJA</span>
+                NAVÍO NARANJA
+                <span aria-hidden="true">NAVÍO NARANJA</span>
+            </h1>         
+            <div class="model"></div>
+        </div>
+    </div>
+
+    <section class="about__NN">
+        <div class="main__content">
+            <img src="{% static 'images/about2.png' %}" alt="">
+            <div class="info__text">
+                <h4>About Navío Naranja</h4>
+                <h1>La nostalgia del pasado, el ritmo del presente</h1>
+                <p>Explora nuestro catálogo de vinilos y CDs en línea y reserva tus discos favoritos con un solo clic. Obtén un cupón digital para recoger tu pedido en tienda sin filas ni esperas.
+                     ¡Compra rápida, sencilla y sin estrés, para que puedas disfrutar de tu música al instante! No más búsquedas interminables ni sorpresas de stock: solo la mejor música, justo cuando la quieres.
+                      ¡Haz tu compra hoy y vive la experiencia de la música sin complicaciones!</p>
+                <div class="btn">
+                    <a href="#" class="button">Ver más</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="waves">
+            <div class="wave" id="wave1"></div>
+            <div class="wave" id="wave2"></div>
+            <div class="wave" id="wave3"></div>
+            <div class="wave" id="wave4"></div>
+        </div>
+
+        <ul class="social__media">
+            <li><a href="#"><i class='bx bxl-facebook'></i></a></li>
+            <li><a href="#"><i class='bx bxl-twitter' ></i></a></li>
+            <li><a href="#"><i class='bx bxl-instagram-alt' ></i></a></li>
+            <li><a href="#"><i class='bx bxl-tiktok' ></i></a></li>
+        </ul>
+        <ul class="menu">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Contacto</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">About</a></li>
+        </ul>
+        <p>© 2024 Navío Naranja. Todos los derechos reservados.</p>
+    </footer>
+    
+</body>
+</html>
