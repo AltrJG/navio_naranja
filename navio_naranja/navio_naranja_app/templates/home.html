@@ -9,9 +9,9 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style2.css' %}">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style2.css' %}">
 </head>
 <body>
 
@@ -73,170 +73,40 @@
                 <i class='bx bx-chevron-down'></i>
             </div>
             <div class="dropdown-menu">
-                <!-- Panel de Categorías -->
+                <!--Panel de Categorías-->
                 <div class="dropdown-categories">
-                    <div class="category" data-category="pop">Pop<i class='bx bx-chevron-right'></i></div>
-                    <div class="category" data-category="hip-hop">Hip-Hop/Rap<i class='bx bx-chevron-right'></i></div>
-                    <div class="category" data-category="rock">Rock<i class='bx bx-chevron-right'></i></div>
-                    <div class="category" data-category="RnB">R&B/Soul<i class='bx bx-chevron-right'></i></div>
-                    <div class="category" data-category="country">Country<i class='bx bx-chevron-right'></i></div>
-                    <div class="category" data-category="regga">Reggaeton<i class='bx bx-chevron-right'></i></div>
-                    <div class="category" data-category="jazz">Jazz<i class='bx bx-chevron-right'></i></div>
-                    <div class="category" data-category="blues">Blues<i class='bx bx-chevron-right'></i></div>
-                    <div class="category" data-category="classic">Classical<i class='bx bx-chevron-right'></i></div>
+                    <div class="category" data-category="destacados">Destacados<i class='bx bx-chevron-right'></i></div>
+                    {% for genre in genres %}
+                        <div class="category" data-category="{{ genre.name|slugify }}">{{ genre.name }}<i class='bx bx-chevron-right'></i></div>
+                    {% endfor %}
                 </div>
-                <!-- Panel de Productos Destacados -->
+                <!--Panel de Productos-->
                 <div class="dropdown-products">
-                    <div class="products" id="pop">
-                        <h4>Productos Pop</h4>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
+                    <div class="products active" id="destacados">
+                        <h4>Productos Destacados</h4>
+                        {% for product in featured %}
+                            <div class="product-item">
+                                <img src="{{ product.cover_image.url }}" alt="{{ product.title }}">
+                                <p>{{ product.title }}</p>
+                            </div>
+                        {% endfor %}
                     </div>
-                    <div class="products" id="hip-hop">
-                        <h4>Productos Hip-Hop/Rap</h4>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
+                    {% for genre, products in products_by_genre.items %}
+                        <div class="products" id="{{ genre|slugify }}">
+                            <h4>Productos {{ genre }}</h4>
+                            {% for product in products %}
+                                <div class="product-item">
+                                    <img src="{{ product.cover_image.url }}" alt="{{ product.title }}">
+                                    <p>{{ product.title }}</p>
+                                </div>
+                            {% endfor %}
                         </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                    </div>
-                    <div class="products" id="rock">
-                        <h4>Productos Rock</h4>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                    </div>
-                    <div class="products" id="RnB">
-                        <h4>Productos R&B/Soul</h4>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                    </div>
-                    <div class="products" id="country">
-                        <h4>Productos Country</h4>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                    </div>
-                    <div class="products" id="regga">
-                        <h4>Productos Reggaeton</h4>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                    </div>
-                    <div class="products" id="jazz">
-                        <h4>Productos Jazz</h4>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                    </div>
-                    <div class="products" id="blues">
-                        <h4>Productos Blues</h4>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                    </div>
-                    <div class="products" id="classic">
-                        <h4>Productos Classical</h4>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 1">
-                            <p>Producto 1</p>
-                        </div>
-                        <div class="product-item">
-                            <img src="{% static 'images/bgcover.png' %}" alt="Producto 2">
-                            <p>Producto 2</p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
+        
+        
 
         <div class="search-bar">
             <i class='bx bx-search'></i>
@@ -251,6 +121,64 @@
 
     <main>
 
+        
+        <div class="transition-screen">
+            <!--Crowd-->
+        </div>
+
+        <div class="container-carousel">
+            <div class="carruseles" id="slider">
+                {% for image in images %}
+                <section class="slider-section">
+                    <a href="{{ image.link }}" target="_blank">
+                        <picture>
+                            <!-- Imagen para pantallas móviles -->
+                            <source srcset="{{ image.mobile_image.url }}" media="(max-width: 768px)">
+                            <!-- Imagen para pantallas grandes (escritorio) -->
+                            <img src="{{ image.desktop_image.url }}" alt="{{ image.alt_text }}">
+                        </picture>
+                    </a>
+                </section>
+                {% endfor %}
+            </div>
+            <div class="btn-left"><i class='bx bx-chevron-left'></i></div>
+            <div class="btn-right"><i class='bx bx-chevron-right'></i></div>
+        </div>
+
+        <section class="featured-section">
+
+            <div class="featured-header">
+                <img src="{% static 'images/featured-shadow.webp' %}" alt="Destacados" class="featured-image">
+            </div>
+
+            <div class="custom-carousel-container">
+                <div class="custom-carousel" id="custom-slider">
+                    {% for product in featured %}
+                    <section class="custom-slider-section">
+                        <div class="custom-card">
+                            <div class="custom-card-image">
+                                <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="custom-album-cover">
+                            </div>
+                            <div class="custom-card-content">
+                                <h3 class="custom-album-title">{{ product.title }}</h3>
+                                <p class="custom-artist-name">{{ product.artist }}</p>
+                                <p class="custom-price">Precio: ${{ product.price }}</p>
+                                <p class="custom-stock">Stock: {{ product.stock }} disponibles</p>
+                                <button class="custom-buy-button">Añadir al carrito</button>
+                            </div>
+                        </div>
+                    </section>
+                    {% endfor %}
+                </div>
+                <div class="custom-btn-left"><i class='bx bx-chevron-left'></i></div>
+                <div class="custom-btn-right"><i class='bx bx-chevron-right'></i></div>
+            </div>
+            
+            
+            
+            
+        </section>
+
         <h1>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate dignissimos vel tempora perferendis enim qui soluta, omnis eaque quasi ab.</h1>
 
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis corporis explicabo, aperiam rerum exercitationem officiis reiciendis! Nemo vel autem tempore quidem eius at sunt omnis excepturi, maxime assumenda nam quam neque perferendis laborum nobis nesciunt nulla rerum. Vero velit unde aspernatur aperiam natus culpa placeat illum, obcaecati minima laborum voluptatum deserunt, possimus, quaerat assumenda necessitatibus iste! Ea, pariatur repellendus. Saepe in aspernatur quae quaerat excepturi ducimus accusantium illo vero a fugit, id fuga modi corporis officia et recusandae labore quidem neque, quos hic mollitia. Tempora totam nisi nulla, nostrum, hic neque harum alias provident quo, officia obcaecati vero nesciunt molestiae sequi! Nihil aut excepturi nam aliquid! Modi corporis consequuntur facilis! Nesciunt modi autem deleniti esse nobis, maxime ipsum praesentium excepturi iure repellendus incidunt earum cum ea quibusdam, tempora adipisci suscipit fugit harum odit. Vitae eius dolor pariatur eligendi itaque? Sed, nisi! Architecto repudiandae molestiae eaque, vero id officia. Ullam, ab itaque perferendis minima dolores impedit sit quaerat doloribus cumque nesciunt fuga mollitia, magni harum eum saepe tenetur. Aperiam provident, quo vitae voluptate similique fugiat iure excepturi eos totam reiciendis! Necessitatibus voluptatem exercitationem quasi modi facere assumenda soluta qui consequuntur laborum ad officiis quas repudiandae, dolorem ratione nisi odio? Voluptatem veritatis ipsum minus nemo eos aliquid veniam facere? Iste, porro libero. Odio dolorem perspiciatis fugit sint inventore reprehenderit officiis voluptas est. Explicabo neque fugiat hic quidem id totam praesentium eos aut suscipit ipsum magnam officia eum nemo vel reprehenderit ducimus sint repellat quos illum minus, assumenda quibusdam atque nostrum cum? Nostrum, deserunt accusamus perferendis obcaecati nemo voluptate dignissimos. Debitis earum facere quibusdam quidem maxime dignissimos ex dolores harum exercitationem deserunt, consequuntur quaerat laborum nostrum cupiditate facilis ullam ea eligendi quos hic corporis itaque autem. Minus, eius modi tenetur id ipsa non delectus, voluptates unde exercitationem amet eos! Eum dolore voluptate eveniet ullam, harum voluptates ab voluptatibus alias, consequuntur minima eligendi suscipit non nesciunt tempore ut quas aliquam doloremque quod beatae at? Asperiores, minus repellendus fugit nam quas, numquam quidem ut similique consequatur, amet quis? Odio quae sit accusantium beatae molestiae, ab tempore illo, repellendus sunt natus nam dicta incidunt eos nulla atque vero necessitatibus ex dolor, sapiente corrupti deserunt a quam. Atque, reprehenderit praesentium, aliquid omnis assumenda in id facilis, voluptatibus molestiae animi amet doloremque fugit est natus ipsum quidem cum dolore qui! Magnam doloremque totam modi praesentium ea quaerat laborum, amet non ut id aperiam quo officiis deleniti eaque consequatur dolorum suscipit voluptatem perspiciatis? Magni sint amet, laboriosam quas expedita architecto consectetur eos cupiditate saepe modi laudantium, recusandae quaerat quisquam esse quibusdam soluta praesentium numquam! Beatae eaque quibusdam fuga iure nam provident iusto doloremque similique harum. Optio minima doloremque, dolor, ratione quae odit hic voluptas commodi dignissimos at, voluptatem perferendis facere? Dicta quas atque magnam harum obcaecati assumenda ratione nesciunt accusantium velit fugit id rerum adipisci, culpa cupiditate non repellendus perferendis repellat sapiente asperiores inventore tenetur? Totam nam incidunt expedita officia commodi reprehenderit error quibusdam! Ipsam corporis possimus mollitia, autem pariatur aspernatur cumque illo distinctio enim voluptatibus ex ducimus ipsum reiciendis id impedit accusamus quidem rerum consequuntur odio dicta laborum adipisci, aliquid voluptate! Praesentium molestiae consequuntur ad labore temporibus mollitia assumenda eligendi ipsa quam vitae ut id voluptates accusamus accusantium earum beatae, illum vero voluptatibus tenetur, a consequatur provident. Totam sunt animi, tempore quibusdam similique ad. Assumenda rem deleniti quam quasi repellendus distinctio! Exercitationem sapiente ullam hic perferendis dolore corporis perspiciatis reprehenderit doloremque, blanditiis recusandae ducimus, dicta iure quis labore sint sit minima inventore voluptates quo minus. Eius quod rerum excepturi vitae pariatur minima labore ullam maxime eveniet ipsum explicabo repudiandae sunt obcaecati deleniti optio sequi officia consectetur placeat, eaque suscipit quo minus. Aspernatur quod debitis hic illum. Optio quam ratione, repudiandae, eligendi magnam recusandae accusantium nostrum voluptate ipsam, quod rerum aliquam? Cupiditate modi aspernatur alias adipisci ad ducimus asperiores voluptate tempore nesciunt! Quod ad explicabo suscipit, earum illo voluptas commodi quam unde officiis dolorem odit dolorum aliquid temporibus sed corporis a non hic tempore ab assumenda debitis quasi? Fuga iure reiciendis explicabo nostrum veritatis! Voluptate autem ipsum aut iusto reprehenderit. Ut ullam laborum aliquam et atque expedita sint tempora, iusto, excepturi, similique iure fugiat perferendis dicta corporis nisi! Fuga doloribus facilis iure explicabo vitae doloremque quidem! Quos quas odit dolorum voluptatem maiores eveniet delectus, esse, qui perferendis eum nobis doloribus adipisci sunt. Quos illum suscipit libero iure assumenda omnis. Tempore praesentium asperiores sed. Sint eligendi repellat, consectetur expedita, minima rerum deserunt dolorem suscipit neque tempora non laboriosam ex error est necessitatibus sapiente laborum numquam asperiores. Ullam veniam distinctio quam placeat id! Distinctio ratione vel quidem ut ullam ad, fugiat consequatur nesciunt, mollitia tenetur adipisci reprehenderit, perspiciatis qui dolores doloribus excepturi hic fuga voluptate! Labore distinctio doloribus sit mollitia? Ab, harum. Incidunt, velit tempore dolore rem, voluptatibus quas optio ipsam voluptatum praesentium magnam laborum harum veritatis eos, ratione similique saepe quae architecto nobis neque quo suscipit. Possimus voluptatem iste harum sint eius! Consectetur veniam voluptatum quae eligendi, cumque maxime, rem quia, et molestias porro itaque odit pariatur soluta vel fugiat placeat esse minima quis deserunt harum. Soluta voluptatem alias saepe officia, reiciendis hic, dicta quasi natus dolore voluptate incidunt. Corporis amet nobis, iure at esse tempora. Vitae in dignissimos delectus ipsa nulla quibusdam possimus consectetur dolore sequi sapiente eveniet rerum mollitia eum odit consequatur accusamus, molestiae rem. Sunt ea voluptatem autem earum ad! Autem pariatur ipsum consequuntur provident, fuga explicabo sequi odit neque alias accusantium ratione nihil voluptate esse? Possimus ut ex exercitationem veniam in repudiandae rem, consequuntur officia veritatis modi, consectetur odio eveniet harum! Totam exercitationem at dolorum nulla laudantium nihil tenetur rerum commodi qui minus, adipisci vitae quo quae hic consequatur aliquam consectetur nisi, deleniti magnam molestias sequi doloremque enim? Non nesciunt commodi sed repellendus odio, labore expedita architecto eius voluptates mollitia illo eaque. Officia soluta facilis consectetur, nobis sit vel quidem reiciendis a aliquid, quod at! Qui quam aliquam sit ducimus ex est at doloremque accusamus labore eum, facere obcaecati delectus reprehenderit quo fugiat unde recusandae enim nihil distinctio veritatis corrupti. Libero recusandae quia cumque tempora consequuntur!</p>
@@ -263,5 +191,9 @@
     <script src="{% static 'js/overlay.js' %}"></script>
     <script src="{% static 'js/dropdown.js' %}"></script>
     <script src="{% static 'js/scroll-header-out.js' %}"></script>
+    <script src="{% static 'js/carousel.js' %}"></script>
+    <script src="{% static 'js/carousel-slider.js' %}"></script>
+    <script src="{% static 'js/crowd.js' %}"></script>
+    <script src="{% static 'js/slider-featured.js' %}"></script>
 </body>
 </html>
