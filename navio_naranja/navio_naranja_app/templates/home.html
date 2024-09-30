@@ -17,6 +17,7 @@
 
     <div class="overlay"></div>
     <div class="overlay2"></div>
+    <div class="overlay3"></div>
 
     <nav class="navbar">
 
@@ -115,9 +116,52 @@
             <i class='bx bx-x clear-icon'></i>
             </div>
         </div>
+
+        <a href="#" class="cart-icon">
+            <i class='bx bx-cart'></i>
+            <span class="cart-count" id="cartCount">0</span>
+        </a>
+        
+
         <a href="#" class="search__icon"><i class='bx bx-search search-icon'></i></a>
 
     </header>
+
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-sidebar-header">
+            <h3>Tu carrito</h3>
+            <button id="closeSidebarBtn">&times;</button> 
+        </div>
+        <div class="cart-sidebar-content">
+            {% if all_products %}
+                {% for product in all_products %}
+                    <div class="product-item-cart">
+                        <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="product-image-cart">
+                        <div class="product-details-cart">
+                            <div class="product-info">
+                                <p class="product-title-cart">{{ product.title }}</p>
+                                <p class="product-price-cart">${{ product.price|floatformat:2 }}</p>
+                            </div>
+                            <div class="quantity-controls">
+                                <i class='bx bx-trash remove-product' title="Eliminar producto"></i> 
+                                <button class="decrease-quantity">-</button>
+                                <input type="number" class="quantity-input" value="1" min="1" />
+                                <button class="increase-quantity">+</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Tu carrito está vacío.</p>
+            {% endif %}
+        </div>
+        <div class="cart-total">
+            <p>Total: <span id="totalAmount">$0.00</span></p>
+            <button id="confirmPurchaseBtn">Confirmar compra</button>
+        </div>
+    </div>
+    
+    
 
     <main>
 
@@ -173,8 +217,16 @@
                 <div class="custom-btn-left"><i class='bx bx-chevron-left'></i></div>
                 <div class="custom-btn-right"><i class='bx bx-chevron-right'></i></div>
             </div>
-            
-            
+
+
+            <div class="widget">
+                <div class="current-info">
+                    <p id="current-date-day"></p> 
+                    <p id="current-period"></p> 
+                </div>
+                <i id="time-icon" class="bx"></i>
+                <p id="week-status"></p> 
+            </div>
             
             
         </section>
@@ -195,5 +247,7 @@
     <script src="{% static 'js/carousel-slider.js' %}"></script>
     <script src="{% static 'js/crowd.js' %}"></script>
     <script src="{% static 'js/slider-featured.js' %}"></script>
+    <script src="{% static 'js/right-side-menu.js' %}"></script>
+    <script src="{% static 'js/time-widget.js' %}"></script>
 </body>
 </html>
