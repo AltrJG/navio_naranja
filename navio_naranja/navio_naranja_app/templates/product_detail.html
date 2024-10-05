@@ -1,0 +1,225 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style2.css' %}">
+</head>
+<body>
+
+    <div class="overlay"></div>
+    <div class="overlay2"></div>
+    <div class="overlay3"></div>
+
+    <nav class="navbar">
+
+        <ul class="navbar__nav">
+
+            <li class="logo">
+                <a href="#" class="nav__link">
+                    <img src="{% static 'images/icon.svg' %}" alt="Icono de la página" class="page-icon">
+                    <span class="link__text">Navío Naranja</span>
+                </a>
+            </li>
+
+            <li class="nav__item" id="youAreHere">
+                <a href="#" class="nav__link">
+                    <i class='bx bx-home'></i>
+                    <span class="link__text">Inicio</span>
+                </a>
+            </li>
+
+            <li class="nav__item">
+                <a href="#" class="nav__link">
+                    <i class='bx bx-search' ></i>
+                    <span class="link__text">Búsqueda</span>
+                </a>
+            </li>
+
+            <li class="nav__item">
+                <a href="#" class="nav__link">
+                    <i class='bx bx-cart' ></i>
+                    <span class="link__text">Carrito</span>
+                </a>
+            </li>
+
+            <li class="nav__item">
+                <a href="#" class="nav__link">
+                    <i class='bx bx-moon' ></i>
+                    <span class="link__text">Modo oscuro</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+    <div class="top-bar"></div>
+
+    <header>
+
+        <img src="{% static 'images/icon.svg' %}" alt="Icono de la página" class="page-icon">
+
+        <div class="dropdown">
+            <div class="dropdown-btn">
+                <span>Categorías</span>
+                <i class='bx bx-chevron-down'></i>
+            </div>
+            <div class="dropdown-menu">
+                <!-- Panel de Categorías -->
+                <div class="dropdown-categories">
+                    <div class="category" data-category="destacados">Destacados <i class='bx bx-chevron-right'></i></div>
+                    {% for genre in genres %}
+                        <div class="category" data-category="{{ genre.name|slugify }}">{{ genre.name }}<i class='bx bx-chevron-right'></i></div>
+                    {% endfor %}
+                </div>
+                <!-- Panel de Productos -->
+                <div class="dropdown-products">
+                    <div class="products active" id="destacados">
+                        <h4>Productos Destacados</h4>
+                        {% for product in featured %}
+                            <a href="{% url 'product_detail' product_id=product.id %}">
+                                <div class="product-item">
+                                    <img src="{{ product.cover_image.url }}" alt="{{ product.title }}">
+                                    <p>{{ product.title }}</p>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    {% for genre, products in products_by_genre.items %}
+                        <div class="products" id="{{ genre|slugify }}">
+                            <h4>Productos {{ genre }}</h4>
+                            {% for product in products %}
+                                <a href="{% url 'product_detail' product_id=product.id %}">
+                                    <div class="product-item">
+                                        <img src="{{ product.cover_image.url }}" alt="{{ product.title }}">
+                                        <p>{{ product.title }}</p>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        
+
+        <div class="search-bar">
+            <i class='bx bx-search'></i>
+            <input type="text" placeholder="Buscar" id="search-input">
+            <div class="clear__icon">
+            <i class='bx bx-x clear-icon'></i>
+            </div>
+        </div>
+
+        <a href="#" class="cart-icon">
+            <i class='bx bx-cart'></i>
+            <span class="cart-count" id="cartCount">0</span>
+        </a>
+        
+
+        <a href="#" class="search__icon"><i class='bx bx-search search-icon'></i></a>
+
+    </header>
+
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-sidebar-header">
+            <h3>Tu carrito</h3>
+            <button id="closeSidebarBtn">&times;</button> 
+        </div>
+        <div class="cart-sidebar-content">
+            {% if all_products %}
+                {% for product in all_products %}
+                    <div class="product-item-cart">
+                        <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="product-image-cart">
+                        <div class="product-details-cart">
+                            <div class="product-info">
+                                <p class="product-title-cart">{{ product.title }}</p>
+                                <p class="product-price-cart">${{ product.price|floatformat:2 }}</p>
+                            </div>
+                            <div class="quantity-controls">
+                                <i class='bx bx-trash remove-product' title="Eliminar producto"></i> 
+                                <button class="decrease-quantity">-</button>
+                                <input type="number" class="quantity-input" value="1" min="1" />
+                                <button class="increase-quantity">+</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Tu carrito está vacío.</p>
+            {% endif %}
+        </div>
+        <div class="cart-total">
+            <p>Total: <span id="totalAmount">$0.00</span></p>
+            <button id="confirmPurchaseBtn">Confirmar compra</button>
+        </div>
+    </div>
+    
+    
+
+    <main>
+
+        <div class="product-detail-container">
+
+            <img src="{{ product.cover_image.url }}" alt="{{ product.title }}">
+
+            <div class="product-detail-info">
+                <div class="top-info">
+                    <h1>{{ product.title }}</h1>
+                    <div class="product-genres">
+                        <ul class="genre-tags">
+                            {% for genre in product_genres %}
+                                <li class="tag">{{ genre.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                <p class="product-detail-price">${{ product.price|floatformat:2 }}</p>
+                </div>
+                <a href="#" class="add-to-cart-btn">Añadir al Carrito</a>
+                <div class="bottom-info">
+                    <p>Stock Disponible: {{ product.stock }}</p>
+                    <p>Artista: {{ product.artist }}</p>
+                    <p>Tipo de Producto: {{ product.product_type }}</p>
+                    <p>Fecha de Lanzamiento: {{ product.release_date }}</p>
+                    <div class="product-detail-description">
+                        <p>Descripción: {{ product.description }}</p>
+                    </div>
+                    <div class="track-list">
+                            <h3>Canciones incluidas:</h3>
+                        <ul>
+                            {% for song in product.songs.all %}
+                                <li>{{ song.title }} - {{ song.artist }} ({{ song.duration|time:"H:i" }})</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+    
+            
+        </div>
+        
+    </main>
+
+    <script src="{% static 'js/clear-search.js' %}"></script>
+    <script src="{% static 'js/overlay.js' %}"></script>
+    <script src="{% static 'js/dropdown.js' %}"></script>
+    <script src="{% static 'js/scroll-header-out.js' %}"></script>
+    <script src="{% static 'js/carousel.js' %}"></script>
+    <script src="{% static 'js/carousel-slider.js' %}"></script>
+    <script src="{% static 'js/crowd.js' %}"></script>
+    <script src="{% static 'js/slider-featured.js' %}"></script>
+    <script src="{% static 'js/right-side-menu.js' %}"></script>
+    <script src="{% static 'js/time-widget.js' %}"></script>
+</body>
+</html>

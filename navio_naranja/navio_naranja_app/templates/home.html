@@ -74,38 +74,43 @@
                 <i class='bx bx-chevron-down'></i>
             </div>
             <div class="dropdown-menu">
-                <!--Panel de Categorías-->
+                <!-- Panel de Categorías -->
                 <div class="dropdown-categories">
-                    <div class="category" data-category="destacados">Destacados<i class='bx bx-chevron-right'></i></div>
+                    <div class="category" data-category="destacados">Destacados <i class='bx bx-chevron-right'></i></div>
                     {% for genre in genres %}
                         <div class="category" data-category="{{ genre.name|slugify }}">{{ genre.name }}<i class='bx bx-chevron-right'></i></div>
                     {% endfor %}
                 </div>
-                <!--Panel de Productos-->
+                <!-- Panel de Productos -->
                 <div class="dropdown-products">
                     <div class="products active" id="destacados">
                         <h4>Productos Destacados</h4>
                         {% for product in featured %}
-                            <div class="product-item">
-                                <img src="{{ product.cover_image.url }}" alt="{{ product.title }}">
-                                <p>{{ product.title }}</p>
-                            </div>
+                            <a href="{% url 'product_detail' product_id=product.id %}">
+                                <div class="product-item">
+                                    <img src="{{ product.cover_image.url }}" alt="{{ product.title }}">
+                                    <p>{{ product.title }}</p>
+                                </div>
+                            </a>
                         {% endfor %}
                     </div>
                     {% for genre, products in products_by_genre.items %}
                         <div class="products" id="{{ genre|slugify }}">
                             <h4>Productos {{ genre }}</h4>
                             {% for product in products %}
-                                <div class="product-item">
-                                    <img src="{{ product.cover_image.url }}" alt="{{ product.title }}">
-                                    <p>{{ product.title }}</p>
-                                </div>
+                                <a href="{% url 'product_detail' product_id=product.id %}">
+                                    <div class="product-item">
+                                        <img src="{{ product.cover_image.url }}" alt="{{ product.title }}">
+                                        <p>{{ product.title }}</p>
+                                    </div>
+                                </a>
                             {% endfor %}
                         </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
+        
         
         
 

@@ -28,6 +28,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let slideInterval = setInterval(autoSlide, 3000);
 
+    // Desactivar el auto deslizamiento cuando el mouse esté sobre el carrusel
+    carrusel.addEventListener('mouseenter', function() {
+        clearInterval(slideInterval); // Detener el intervalo cuando el mouse está encima
+    });
+
+    // Reactivar el auto deslizamiento cuando el mouse salga del carrusel
+    carrusel.addEventListener('mouseleave', function() {
+        slideInterval = setInterval(autoSlide, 3000); // Reiniciar el intervalo al salir
+    });
+
     rightButton.addEventListener('click', function() {
         clearInterval(slideInterval); 
         if (currentIndex < totalImages - 1) {
