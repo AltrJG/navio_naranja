@@ -1150,6 +1150,7 @@ main{
 }
 
 /*right side menu*/
+
 .cart-sidebar {
   position: fixed;
   top: 0;
@@ -1494,4 +1495,63 @@ main{
     height: auto;
     margin-bottom: 1rem;
   }
+}
+
+/*suggestions box*/
+
+.suggestions-box {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 5px;
+  max-height: 50vh;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 5px 5px;
+  overflow-y: auto;
+  z-index: 10;
+  display: none;
+  color: black;
+}
+
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.suggestion-item:hover {
+  background-color: #f7f7f7;
+}
+
+.suggestions-box::-webkit-scrollbar {
+  width: 0.3rem;
+}
+
+.suggestions-box::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.suggestions-box::-webkit-scrollbar-thumb {
+  background: #e3aa47;
+  border-radius: 10px;
+}
+
+.suggestions-box::-webkit-scrollbar-thumb:hover {
+  background: #d09a3d;
+}
+
+.suggestion-item.selected {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+/*search results*/
+
+.results-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Centrar los elementos */
+  padding: 20px; /* Espaciado alrededor de los resultados */
 }

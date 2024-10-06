@@ -30,14 +30,14 @@
                 </a>
             </li>
 
-            <li class="nav__item" id="youAreHere">
+            <li class="nav__item">
                 <a href="#" class="nav__link">
                     <i class='bx bx-home'></i>
                     <span class="link__text">Inicio</span>
                 </a>
             </li>
 
-            <li class="nav__item">
+            <li class="nav__item" id="youAreHere">
                 <a href="#" class="nav__link">
                     <i class='bx bx-search' ></i>
                     <span class="link__text">Búsqueda</span>
@@ -112,6 +112,7 @@
         </div>
         
         
+        
 
         <div class="search-bar">
             <i class='bx bx-search'></i>
@@ -170,45 +171,28 @@
 
     <main>
 
-        <div class="product-detail-container">
+        <h2>Resultados de búsqueda para "{{ query }}"</h2>
 
-            <img src="{{ product.cover_image.url }}" alt="{{ product.title }}">
-
-            <div class="product-detail-info">
-                <div class="top-info">
-                    <h1>{{ product.title }}</h1>
-                    <div class="product-genres">
-                        <ul class="genre-tags">
-                            {% for genre in product_genres %}
-                                <li class="tag">{{ genre.name }}</li>
-                            {% endfor %}
-                        </ul>
+    <div class="results-container">
+        {% for product in products %}
+            <section class="custom-slider-section">
+                <div class="custom-card">
+                    <div class="custom-card-image">
+                        <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="custom-album-cover">
                     </div>
-                <p class="product-detail-price">${{ product.price|floatformat:2 }}</p>
-                </div>
-                <a href="#" class="add-to-cart-btn">Añadir al Carrito</a>
-                <div class="bottom-info">
-                    <p>Stock Disponible: {{ product.stock }}</p>
-                    <p>Artista: {{ product.artist }}</p>
-                    <p>Tipo de Producto: {{ product.product_type }}</p>
-                    <p>Fecha de Lanzamiento: {{ product.release_date }}</p>
-                    <div class="product-detail-description">
-                        <p>Descripción: {{ product.description }}</p>
-                    </div>
-                    <div class="track-list">
-                            <h3>Canciones incluidas:</h3>
-                        <ul>
-                            {% for song in product.songs.all %}
-                                <li>{{ song.title }} - {{ song.artist }} ({{ song.duration|time:"H:i" }})</li>
-                            {% endfor %}
-                        </ul>
+                    <div class="custom-card-content">
+                        <h3 class="custom-album-title">{{ product.title }}</h3>
+                        <p class="custom-artist-name">{{ product.artist }}</p>
+                        <p class="custom-price">Precio: ${{ product.price }}</p>
+                        <p class="custom-stock">Stock: {{ product.stock }} disponibles</p>
+                        <button class="custom-buy-button">Añadir al carrito</button>
                     </div>
                 </div>
-                
-            </div>
-    
-            
-        </div>
+            </section>
+        {% empty %}
+            <p>No se encontraron resultados.</p>
+        {% endfor %}
+    </div>
         
     </main>
 

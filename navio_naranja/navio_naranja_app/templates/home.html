@@ -116,10 +116,11 @@
 
         <div class="search-bar">
             <i class='bx bx-search'></i>
-            <input type="text" placeholder="Buscar" id="search-input">
+            <input type="text" placeholder="Buscar" id="search-input" autocomplete="off" spellcheck="false">
             <div class="clear__icon">
-            <i class='bx bx-x clear-icon'></i>
+                <i class='bx bx-x clear-icon'></i>
             </div>
+            <div id="suggestions" class="suggestions-box"></div>
         </div>
 
         <a href="#" class="cart-icon">
@@ -249,5 +250,6 @@
     <script src="{% static 'js/slider-featured.js' %}"></script>
     <script src="{% static 'js/right-side-menu.js' %}"></script>
     <script src="{% static 'js/time-widget.js' %}"></script>
+    <script src="{% static 'js/suggestions.js' %}"></script>
 </body>
 </html>

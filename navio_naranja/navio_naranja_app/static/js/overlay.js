@@ -25,11 +25,12 @@ searchBar.addEventListener('focusout', () => {
 });
 
 dropdown.addEventListener('mouseenter', () => {
-    overlay2.classList.add('visible');
-    header.classList.add('header-overlay-active');
-  });
-  
+  searchInput.blur();
+  overlay2.classList.add('visible');
+  header.classList.add('header-overlay-active');
+});
+
 dropdown.addEventListener('mouseleave', () => {
-    overlay2.classList.remove('visible');
-    header.classList.remove('header-overlay-active');
-  });
+  overlay2.classList.remove('visible');
+  header.classList.remove('header-overlay-active');
+});
