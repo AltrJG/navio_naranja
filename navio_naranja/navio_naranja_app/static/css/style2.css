@@ -1555,3 +1555,29 @@ main{
   justify-content: center; /* Centrar los elementos */
   padding: 20px; /* Espaciado alrededor de los resultados */
 }
+
+.filter-container {
+  margin-bottom: 20px;
+}
+
+.filter-label {
+  display: inline-block;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.filter-box {
+  display: inline-block;
+  padding: 10px 15px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.filter-box.selected {
+  background-color: #ff7f50;
+  border-color: #e67e22;
+  color: white;
+}
+

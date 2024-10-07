@@ -31,14 +31,14 @@
             </li>
 
             <li class="nav__item">
-                <a href="#" class="nav__link">
+                <a href="/home" class="nav__link">
                     <i class='bx bx-home'></i>
                     <span class="link__text">Inicio</span>
                 </a>
             </li>
 
             <li class="nav__item" id="youAreHere">
-                <a href="#" class="nav__link">
+                <a href="/search_result" class="nav__link">
                     <i class='bx bx-search' ></i>
                     <span class="link__text">Búsqueda</span>
                 </a>
@@ -116,7 +116,7 @@
 
         <div class="search-bar">
             <i class='bx bx-search'></i>
-            <input type="text" placeholder="Buscar" id="search-input" autocomplete="off" spellcheck="false">
+            <input type="text" placeholder="Buscar" id="search-input" autocomplete="off" spellcheck="false" value="{{ query }}">
             <div class="clear__icon">
                 <i class='bx bx-x clear-icon'></i>
             </div>
@@ -170,30 +170,51 @@
     
 
     <main>
-
-        <h2>Resultados de búsqueda para "{{ query }}"</h2>
-
-    <div class="results-container">
-        {% for product in products %}
-            <section class="custom-slider-section">
-                <div class="custom-card">
-                    <div class="custom-card-image">
-                        <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="custom-album-cover">
-                    </div>
-                    <div class="custom-card-content">
-                        <h3 class="custom-album-title">{{ product.title }}</h3>
-                        <p class="custom-artist-name">{{ product.artist }}</p>
-                        <p class="custom-price">Precio: ${{ product.price }}</p>
-                        <p class="custom-stock">Stock: {{ product.stock }} disponibles</p>
-                        <button class="custom-buy-button">Añadir al carrito</button>
-                    </div>
+        <div class="filter-container">
+            <h3>Filtrar por género:</h3>
+            <form id="filter-form" method="GET" action="{% url 'search_result' %}">
+                <input type="hidden" name="q" value="{{ query }}">
+                <div class="genre-filters">
+                    {% for genre in genres %}
+                        <label class="filter-label">
+                            <input type="checkbox" name="genre" value="{{ genre.id }}" {% if genre.id in selected_genres %}checked{% endif %} hidden>
+                            <div class="filter-box">{{ genre.name }}</div>
+                        </label>
+                    {% endfor %}
                 </div>
-            </section>
-        {% empty %}
-            <p>No se encontraron resultados.</p>
-        {% endfor %}
-    </div>
-        
+    
+                <h3>Filtrar por tipo de producto:</h3>
+                <div class="type-filters">
+                    {% for type in product_types %}
+                        <label class="filter-label">
+                            <input type="checkbox" name="type" value="{{ type }}" {% if type in selected_types %}checked{% endif %} hidden>
+                            <div class="filter-box">{{ type }}</div>
+                        </label>
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+    
+        <div class="results-container" id="results-container">
+            {% for product in products %}
+                <section class="custom-slider-section">
+                    <div class="custom-card">
+                        <div class="custom-card-image">
+                            <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="custom-album-cover">
+                        </div>
+                        <div class="custom-card-content">
+                            <h3 class="custom-album-title">{{ product.title }}</h3>
+                            <p class="custom-artist-name">{{ product.artist }}</p>
+                            <p class="custom-price">Precio: ${{ product.price }}</p>
+                            <p class="custom-stock">Stock: {{ product.stock }} disponibles</p>
+                            <button class="custom-buy-button">Añadir al carrito</button>
+                        </div>
+                    </div>
+                </section>
+            {% empty %}
+                <p>No se encontraron resultados.</p>
+            {% endfor %}
+        </div>
     </main>
 
     <script src="{% static 'js/clear-search.js' %}"></script>
@@ -202,5 +223,7 @@
     <script src="{% static 'js/scroll-header-out.js' %}"></script>
     <script src="{% static 'js/right-side-menu.js' %}"></script>
     <script src="{% static 'js/suggestions.js' %}"></script>
+    <script src="{% static 'js/search-criteria-update.js' %}"></script>
+    
 </body>
 </html>

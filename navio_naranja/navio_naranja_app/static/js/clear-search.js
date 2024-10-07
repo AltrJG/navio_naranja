@@ -1,6 +1,12 @@
 const searchInput = document.getElementById('search-input');
 const clearIcon = document.querySelector('.clear__icon');
 
+window.addEventListener('DOMContentLoaded', () => {
+    if (searchInput.value.length > 0) {
+        clearIcon.classList.add('show-clear-icon');
+    }
+});
+
 searchInput.addEventListener('input', () => {
     if (searchInput.value.length > 0) {
         clearIcon.classList.add('show-clear-icon');

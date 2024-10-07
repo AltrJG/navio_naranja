@@ -46,10 +46,10 @@ def search_suggestions(request):
     query = request.GET.get('q', '').strip()
 
     if query:
-        products = Product.objects.filter(Q(title__istartswith=query) | Q(artist__istartswith=query))
-        songs = Song.objects.filter(Q(title__istartswith=query) | Q(artist__istartswith=query))
-        genres = Genre.objects.filter(name__istartswith=query)
-        artists = Song.objects.filter(artist__istartswith=query).distinct().values('artist')
+        products = Product.objects.filter(Q(title__icontains=query) | Q(artist__icontains=query))
+        songs = Song.objects.filter(Q(title__icontains=query) | Q(artist__icontains=query))
+        genres = Genre.objects.filter(name__icontains=query)
+        artists = Song.objects.filter(artist__icontains=query).distinct().values('artist')
     else:
         products = songs = genres = artists = []
 
@@ -64,15 +64,26 @@ def search_suggestions(request):
 
 def search_result(request):
     query = request.GET.get('q', '')
+    selected_genres = request.GET.getlist('genre')
+    selected_types = request.GET.getlist('type')
 
     products_result = Product.objects.filter(
         Q(title__icontains=query) | Q(artist__icontains=query) |
         Q(songs__title__icontains=query) | Q(songs__artist__icontains=query) | 
         Q(songs__genres__name__icontains=query)
     ).distinct()
+
+    if selected_genres:
+        products_result = products_result.filter(songs__genres__in=selected_genres).distinct()
+
+    if selected_types:
+        products_result = products_result.filter(product_type__in=selected_types).distinct()
+
     featured = Product.objects.filter(is_featured=True)
     genres = Genre.objects.all()
     products_by_genre = {genre.name: Product.objects.filter(songs__genres=genre).distinct() for genre in genres}
+
+    product_types = Product.objects.values_list('product_type', flat=True).distinct()
 
     context = {
         'query': query,
@@ -80,6 +91,12 @@ def search_result(request):
         'featured': featured,
         'genres': genres,
         'products_by_genre': products_by_genre,
+        'selected_genres': selected_genres,
+        'selected_types': selected_types,
+        'product_types': product_types,
     }
-    
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'partials/products.html', context)
+
     return render(request, 'search_result.html', context)
