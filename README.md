@@ -1,7 +1,10 @@
 # navio_naranja
 
-# Instala todas las dependencias listadas en requirements.txt
+### Instalar todas las dependencias listadas en requirements.txt
+```
 pip install -r requirements.txt
-
-# Ejecutar el servidor local
+```
+### Ejecutar el servidor local
+```
 python manage.py runserver
+```
