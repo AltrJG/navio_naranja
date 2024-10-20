@@ -24,7 +24,7 @@
         <ul class="navbar__nav">
 
             <li class="logo">
-                <a href="#" class="nav__link">
+                <a href="/home" class="nav__link">
                     <img src="{% static 'images/icon.svg' %}" alt="Icono de la página" class="page-icon">
                     <span class="link__text">Navío Naranja</span>
                 </a>
@@ -47,6 +47,7 @@
             <li class="nav__item">
                 <a href="#" class="nav__link">
                     <i class='bx bx-cart' ></i>
+                    <span class="cart-count" id="cartCount">0</span>
                     <span class="link__text">Carrito</span>
                 </a>
             </li>
@@ -66,7 +67,7 @@
 
     <header>
 
-        <img src="{% static 'images/icon.svg' %}" alt="Icono de la página" class="page-icon">
+        <a href="/home"><img src="{% static 'images/icon.svg' %}" alt="Icono de la página" class="page-icon"></a>
 
         <div class="dropdown">
             <div class="dropdown-btn">
@@ -128,7 +129,7 @@
         </a>
         
 
-        <a href="#" class="search__icon"><i class='bx bx-search search-icon'></i></a>
+        <a href="/search_result" class="search__icon"><i class='bx bx-search search-icon'></i></a>
 
     </header>
 

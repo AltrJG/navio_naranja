@@ -1,8 +1,0 @@
-# Ignorar todos los archivos .pyc
-*.pyc
-
-# Ignorar todos los directorios __pycache__
-__pycache__/
-
-# Ignorar la carpeta de migraciones con archivos .pyc
-navio_naranja_app/migrations/__pycache__/

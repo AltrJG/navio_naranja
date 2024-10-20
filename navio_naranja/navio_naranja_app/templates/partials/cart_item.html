@@ -1,0 +1,15 @@
+<div class="product-item-cart" data-product-id="{{ item.product.id }}">
+    <img src="{{ item.product.cover_image.url }}" alt="{{ item.product.title }}" class="product-image-cart">
+    <div class="product-details-cart">
+        <div class="product-info">
+            <p class="product-title-cart">{{ item.product.title }}</p>
+            <p class="product-price-cart">${{ item.product.price|floatformat:2 }}</p>
+        </div>
+        <div class="quantity-controls">
+            <i class='bx bx-trash remove-product' title="Eliminar producto"></i> 
+            <button class="decrease-quantity">-</button>
+            <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" />
+            <button class="increase-quantity">+</button>
+        </div>
+    </div>
+</div>

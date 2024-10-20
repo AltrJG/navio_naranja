@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'navio_naranja_app.middleware.GuestCartMiddleware',
 ]
 
 ROOT_URLCONF = 'navio_naranja.urls'

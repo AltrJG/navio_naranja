@@ -27,6 +27,10 @@ urlpatterns = [
     path('search-suggestions/', views.search_suggestions, name='search_suggestions'),
     path('search_result/', views.search_result, name='search_result'),
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('add-to-cart/', views.add_to_cart, name='add_to_cart'),
+    path('update-cart-item/', views.update_cart_item_quantity, name='update_cart_item_quantity'),
+    path('remove-cart-item/', views.remove_cart_item, name='remove_cart_item'),
+    path('cart/sidebar/', views.cart_sidebar, name='cart_sidebar'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

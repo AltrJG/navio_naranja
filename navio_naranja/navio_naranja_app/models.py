@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -45,3 +46,30 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+class CartItem(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    cart = models.ForeignKey('Cart', on_delete=models.CASCADE, related_name='items')
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.title}"
+
+class Cart(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    guest_id = models.CharField(max_length=50, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        if self.user:
+            return f"Cart for {self.user.username}"
+        else:
+            return f"Cart for guest {self.guest_id}"
+
+    def total_price(self):
+        return sum(item.product.price * item.quantity for item in self.items.all())
+
+    def item_count(self):
+        return sum(item.quantity for item in self.items.all())
+
