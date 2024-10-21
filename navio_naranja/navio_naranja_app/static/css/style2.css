@@ -132,7 +132,8 @@ main{
     height: 5rem;
 }
 
-#youAreHere .nav__link{
+#youAreHere .nav__link i,
+#yoAreHere .nav__link .link__text{
   filter: grayscale(0%) opacity(1);
   color: var(--text-secondary);
 }

@@ -48,7 +48,9 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.message) {
+            if (data.error) {
+                showMessage(data.error, true);
+            } else if (data.message) {
                 showMessage(data.message);
                 cartCount.textContent = data.cart_item_count;
     
@@ -81,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showMessage('Error al añadir el producto al carrito.', true);
         });
     }
+    
 
     function updateCartItemQuantity(productId, quantity) {
         fetch('/update-cart-item/', {
@@ -158,9 +161,35 @@ document.addEventListener('DOMContentLoaded', function () {
             button.addEventListener('click', function () {
                 const input = this.closest('.quantity-controls').querySelector('.quantity-input');
                 const productId = this.closest('.product-item-cart').dataset.productId;
-                input.value = parseInt(input.value) + 1;
-                updateCartItemQuantity(productId, input.value);
-                updateCartTotal();
+                let currentQuantity = parseInt(input.value);
+                
+                fetch(`/update-cart-item/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCSRFToken(),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams({
+                        'product_id': productId,
+                        'quantity': currentQuantity + 1
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (currentQuantity + 1 <= data.stock) {
+                            input.value = currentQuantity + 1;
+                        } else {
+                            input.value = data.stock;
+                        }
+                        updateCartItemQuantity(productId, input.value);
+                        updateCartTotal();
+                    } else {
+                        console.error('Error al actualizar el carrito:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error al actualizar el carrito:', error));
             });
         });
     

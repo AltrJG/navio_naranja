@@ -118,7 +118,12 @@ def add_to_cart(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
         product = get_object_or_404(Product, id=product_id)
-        
+
+        if product.stock <= 0:
+            return JsonResponse({
+                'error': 'El producto está agotado.'
+            }, status=400)
+
         if request.user.is_authenticated:
             cart, created = Cart.objects.get_or_create(user=request.user)
         else:
@@ -130,8 +135,15 @@ def add_to_cart(request):
 
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
 
+        if cart_item.quantity + 1 > product.stock:
+            return JsonResponse({
+                'error': 'No hay suficiente stock disponible.'
+            }, status=400)
+
         if not created:
             cart_item.quantity += 1
+            cart_item.save()
+        else:
             cart_item.save()
 
         product_html = render_to_string('partials/cart_item.html', {'item': cart_item})
@@ -160,31 +172,31 @@ def update_cart_item_quantity(request):
         except ValueError:
             return JsonResponse({'success': False, 'error': 'Cantidad no válida.'})
 
-        print(f"ID del producto recibido: {product_id}")
-        print(f"Cantidad recibida: {quantity}")
-
         product = get_object_or_404(Product, id=product_id)
         cart = request.cart
 
         cart_item = cart.items.filter(product=product).first()
 
         if cart_item:
-            print(f"Cantidad actual antes de actualizar: {cart_item.quantity}")
+            stock = product.stock
+            if quantity > stock:
+                quantity = stock
+
             cart_item.quantity = quantity
             cart_item.save()
-            print(f"Cantidad actualizada a: {cart_item.quantity}")
 
             return JsonResponse({
                 'success': True,
                 'total': cart.total_price(),
                 'cart_count': cart.item_count(),
+                'stock': stock,
+                'item_quantity': cart_item.quantity
             })
-
         else:
-            print(f"El producto con ID {product_id} no está en el carrito.")
             return JsonResponse({'success': False, 'error': 'El producto no está en el carrito.'})
 
     return JsonResponse({'success': False, 'error': 'Método no permitido o datos faltantes.'})
+
 
 
 
