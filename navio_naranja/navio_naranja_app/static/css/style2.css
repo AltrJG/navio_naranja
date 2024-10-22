@@ -894,7 +894,7 @@ main{
 }
 
 .custom-buy-button {
-  background: #ffce74;
+  background: #ffbd44;
   color: #fff;
   border: none;
   width: 100%;
@@ -1358,7 +1358,7 @@ main{
 }
 
 .quantity-input {
-  width: 2rem; 
+  width: 2.5rem; 
   text-align: center; 
 }
 
@@ -1612,10 +1612,77 @@ main{
   transition: background-color 0.3s, border-color 0.3s;
 }
 
+.filter-box:hover {
+  background-color: #f7f7f7;
+  border-color: #aaa;
+}
+
 .filter-box.selected {
   background-color: #ff7f50;
   border-color: #e67e22;
   color: white;
+}
+
+.filter-box.selected:hover{
+  background-color: #ffa07a;
+  border-color: #f39c12;
+  color: #f5f5f5;
+}
+
+.toggle-genres-btn {
+  display: none;
+}
+
+.filter-container h3 {
+  font-size: 1.8rem; 
+  color: #34495e; 
+  text-align: left; 
+  margin-bottom: 10px; 
+  position: relative; 
+}
+
+.filter-container h3::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 2px;
+  background-color: #e67e22;
+  margin-top: 5px;
+  border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+
+  .filter-container h3{
+    font-size: 1.3rem;
+  }
+
+  .genre-filters {
+      max-height: 3rem;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+  }
+
+  .genre-filters.expanded {
+      max-height: 100vh;
+  }
+
+  .toggle-genres-btn {
+      display: block;
+      margin: 10px 0;
+      background-color: #ffbd44;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      border-radius: 10px;
+  }
+
+  .toggle-genres-btn:hover{
+    background-color: #ffb20a;
+  }
 }
 
 /*Mensajes emergentes*/
@@ -1646,5 +1713,3 @@ main{
 .message-container {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
-
-

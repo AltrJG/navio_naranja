@@ -1,5 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchBar = document.querySelector('.search-bar');
+    const genreFilters = document.getElementById('genre-filters');
+    const toggleButton = document.getElementById('toggle-genres-btn');
+
+    toggleButton.addEventListener('click', function () {
+        genreFilters.classList.toggle('expanded');
+
+        if (genreFilters.classList.contains('expanded')) {
+            toggleButton.textContent = 'Ocultar géneros';
+        } else {
+            toggleButton.textContent = 'Mostrar todos los géneros';
+        }
+    });
 
     if (searchBar) {
         searchBar.style.display = 'flex';

@@ -155,7 +155,7 @@
                             <div class="quantity-controls">
                                 <i class='bx bx-trash remove-product' title="Eliminar producto"></i> 
                                 <button class="decrease-quantity">-</button>
-                                <input type="number" class="quantity-input" value="1" min="1" />
+                                <input type="number" class="quantity-input" value="1" min="1" readonly />
                                 <button class="increase-quantity">+</button>
                             </div>
                         </div>
@@ -179,7 +179,7 @@
             <h3>Filtrar por género:</h3>
             <form id="filter-form" method="GET" action="{% url 'search_result' %}">
                 <input type="hidden" name="q" value="{{ query }}">
-                <div class="genre-filters">
+                <div class="genre-filters" id="genre-filters">
                     {% for genre in genres %}
                         <label class="filter-label">
                             <input type="checkbox" name="genre" value="{{ genre.id }}" {% if genre.id in selected_genres %}checked{% endif %} hidden>
@@ -187,7 +187,9 @@
                         </label>
                     {% endfor %}
                 </div>
+                <button type="button" id="toggle-genres-btn" class="toggle-genres-btn">Mostrar todos los géneros</button>
     
+                <br>
                 <h3>Filtrar por tipo de producto:</h3>
                 <div class="type-filters">
                     {% for type in product_types %}
