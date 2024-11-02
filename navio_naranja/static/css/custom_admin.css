@@ -1,0 +1,12 @@
+/*Jazzmin custom styles*/
+
+.card select {
+    background-color: #495057;
+    color: #ffffff;
+    border: 1px solid #343a40;
+}
+
+.selector .selector-filter {
+    background-color: #495057;
+    border: 1px solid #343a40;
+}
