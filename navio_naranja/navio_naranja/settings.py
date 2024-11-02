@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -131,3 +132,25 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Admin Panel",
+    "site_header": "Navio Naranja",
+    "site_brand": "Navio Naranja",
+    "site_logo": "../static/images/icon.svg",
+    "login_logo": "../static/images/icon.svg",
+    "site_icon": "../static/images/icon.svg",
+    "welcome_sign": "Bienvenido al panel de administración de Navio Naranja",
+    "copyright": "Navio Naranja",
+    "show_ui_builder": False,
+    "custom_css": "../static/css/custom_admin.css",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "darkly",
+    "dark_mode_theme": "superhero",
+    "navbar": "navbar-dark",
+    "accent": "accent-orange",
+    "sidebar_fixed": True,
+    "actions_sticky_top": True
+}
