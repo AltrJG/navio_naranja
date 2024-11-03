@@ -1,5 +1,8 @@
 from django.db import models
 from django.conf import settings
+import uuid  # Para generar identificadores únicos
+import qrcode  # Asegúrate de instalar la librería qrcode
+import os
 
 # Create your models here.
 
@@ -73,3 +76,31 @@ class Cart(models.Model):
     def item_count(self):
         return sum(item.quantity for item in self.items.all())
 
+class Purchase(models.Model):
+    serial_number = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Purchase {self.serial_number}"
+
+    def generate_qr_code(self):
+        qr_data = f"Purchase ID: {self.serial_number}\nItems: {', '.join(str(item) for item in self.items.all())}"
+        qr_image = qrcode.make(qr_data)
+
+        qr_codes_dir = os.path.join(settings.MEDIA_ROOT, 'qr_codes')
+        if not os.path.exists(qr_codes_dir):
+            os.makedirs(qr_codes_dir)
+
+        qr_image_path = os.path.join(qr_codes_dir, f"{self.serial_number}.png")
+        qr_image.save(qr_image_path)
+
+        return os.path.join(settings.MEDIA_URL, 'qr_codes', f"{self.serial_number}.png")
+
+
+class PurchasedItem(models.Model):
+    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.title} (Purchase: {self.purchase.serial_number})"

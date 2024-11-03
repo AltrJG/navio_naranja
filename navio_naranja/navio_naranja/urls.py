@@ -32,6 +32,8 @@ urlpatterns = [
     path('remove-cart-item/', views.remove_cart_item, name='remove_cart_item'),
     path('cart/sidebar/', views.cart_sidebar, name='cart_sidebar'),
     path('cart-detail/', views.cart_detail_view, name='cart_detail'),
+    path('confirm_purchase/', views.confirm_purchase, name='confirm_purchase'),
+    path('confirmacion/<str:serial_number>/', views.confirmation, name='confirmation'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

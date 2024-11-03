@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" >
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito</title>
+    <title>Ticket</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
@@ -48,6 +48,7 @@
             <li class="nav__item" id="youAreHere">
                 <a href="/cart-detail" class="nav__link">
                     <i class='bx bx-cart' ></i>
+                    <span class="cart-count" id="cartCount">0</span>
                     <span class="link__text">Carrito</span>
                 </a>
             </li>
@@ -112,6 +113,9 @@
             </div>
         </div>
         
+        
+        
+
         <div class="search-bar">
             <i class='bx bx-search'></i>
             <input type="text" placeholder="Buscar" id="search-input" autocomplete="off" spellcheck="false">
@@ -128,39 +132,14 @@
     <div id="message-container" class="message-container">
         <span id="message-content"></span>
     </div>
-        
+
     <main>
-        <div class="review-cart-fullscreen" id="reviewCartFullscreen">
-            <div class="review-cart-header">
-                <h3>Revisa tu carrito</h3>
-            </div>
-            <div class="review-cart-content">
-                    {% if cart_items %}
-                        {% for item in cart_items %}
-                        <div class="review-product-item" data-product-id="{{ item.product.id }}">
-                            <img src="{{ item.product.cover_image.url }}" alt="{{ item.product.title }}" class="review-product-image">
-                            <div class="review-product-details">
-                                <div class="review-product-info">
-                                    <p class="review-product-title">{{ item.product.title }}</p>
-                                    <p class="review-product-price">${{ item.product.price|floatformat:2 }}</p>
-                                </div>
-                                <div class="review-quantity-controls">
-                                    <i class='bx bx-trash review-remove-product' title="Eliminar producto"></i>
-                                    <button type="button" class="review-decrease-quantity">-</button>
-                                    <input type="number" class="review-quantity-input" name="quantity_{{ item.product.id }}" value="{{ item.quantity }}" min="1" readonly />
-                                    <button type="button" class="review-increase-quantity">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>Tu carrito está vacío.</p>
-                    {% endif %}
-                    <div class="review-cart-total">
-                        <p>Total: <span id="reviewTotalAmount">$0.00</span></p>
-                        <button type="button" id="confirmPurchaseBtn" data-url="{% url 'confirm_purchase' %}">Confirmar compra</button>
-                    </div>
-            </div>
+        <div class="purchase-confirmation">
+            <h2 class="confirmation-title">Confirmación de Compra</h2>
+            <p class="serial-number">Número de Serie: {{ purchase_serial_number }}</p>
+            <img class="qr-code" src="{{ qr_code_path }}" alt="Código QR para la compra">
+            <a href="{{ qr_code_path }}" download class="download-button">Descargar Código QR</a>
+            <p class="thank-you-message">Gracias por tu compra. Puedes recoger tus artículos en la tienda.</p>
         </div>
     </main>
     
@@ -169,9 +148,18 @@
     <script src="{% static 'js/overlay.js' %}"></script>
     <script src="{% static 'js/dropdown.js' %}"></script>
     <script src="{% static 'js/scroll-header-out.js' %}"></script>
-    <script src="{% static 'js/cart-review.js' %}"></script>
+    <script src="{% static 'js/carousel.js' %}"></script>
+    <script src="{% static 'js/carousel-slider.js' %}"></script>
+    <script src="{% static 'js/slider-featured.js' %}"></script>
+    <script src="{% static 'js/cart.js' %}"></script>
+    <script src="{% static 'js/time-widget.js' %}"></script>
     <script src="{% static 'js/suggestions.js' %}"></script>
-    <script src="{% static 'js/confirm-purchase.js' %}"></script>
+
+    <script>
+        function getCSRFToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+    </script>
     
 </body>
 </html>

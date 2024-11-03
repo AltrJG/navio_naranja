@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.db.models import Q
-from .models import CarouselImage, Product, Genre, Song, Cart, CartItem
+from .models import CarouselImage, Product, Genre, Song, Cart, CartItem, Purchase, PurchasedItem
 import uuid
 import json
 from django.template.loader import render_to_string
@@ -274,3 +274,47 @@ def cart_sidebar(request):
     cart_items = cart.items.all() if cart else []
     
     return render(request, 'partials/cart_sidebar.html', {'cart_items': cart_items})
+
+def confirm_purchase(request):
+    if request.method == "POST":
+        cart = request.cart
+        purchase = Purchase.objects.create()
+
+        for item in cart.items.all():
+            quantity = int(request.POST.get(f'quantity_{item.product.id}', 0))
+            if quantity > 0:
+                PurchasedItem.objects.create(purchase=purchase, product=item.product, quantity=quantity)
+                item.product.stock -= quantity
+                item.product.save()
+
+        cart.items.all().delete()
+        cart.save()
+
+        qr_code_path = purchase.generate_qr_code()
+
+        request.session['purchase_serial_number'] = str(purchase.serial_number)
+        request.session['qr_code_path'] = qr_code_path
+
+        response_data = {
+            'serial_number': str(purchase.serial_number),
+            'qr_code_path': qr_code_path
+        }
+        return JsonResponse(response_data)
+
+    return redirect('cart_detail')
+
+
+def confirmation(request, serial_number):
+    featured = Product.objects.filter(is_featured=True)
+    genres = Genre.objects.all()
+    products_by_genre = {genre.name: Product.objects.filter(songs__genres=genre).distinct() for genre in genres}
+    qr_code_path = request.session.get('qr_code_path')
+    
+    context = {
+        'purchase_serial_number': serial_number,
+        'qr_code_path': qr_code_path,
+        'featured': featured,
+        'genres': genres,
+        'products_by_genre': products_by_genre
+    }
+    return render(request, 'confirmation.html', context)
