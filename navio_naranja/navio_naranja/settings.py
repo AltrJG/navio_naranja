@@ -108,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-mx'
 
 TIME_ZONE = 'America/Mexico_City'
 
@@ -137,9 +137,9 @@ JAZZMIN_SETTINGS = {
     "site_title": "Admin Panel",
     "site_header": "Navio Naranja",
     "site_brand": "Navio Naranja",
-    "site_logo": "../static/images/icon.svg",
+    "site_logo": "../static/images/favicon.ico",
     "login_logo": "../static/images/icon.svg",
-    "site_icon": "../static/images/icon.svg",
+    "site_icon": "../static/images/favicon.ico",
     "welcome_sign": "Bienvenido al panel de administración de Navio Naranja",
     "copyright": "Navio Naranja",
     "show_ui_builder": False,

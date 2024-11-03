@@ -31,6 +31,7 @@ urlpatterns = [
     path('update-cart-item/', views.update_cart_item_quantity, name='update_cart_item_quantity'),
     path('remove-cart-item/', views.remove_cart_item, name='remove_cart_item'),
     path('cart/sidebar/', views.cart_sidebar, name='cart_sidebar'),
+    path('cart-detail/', views.cart_detail_view, name='cart_detail'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

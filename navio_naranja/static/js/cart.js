@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const cartIcon = document.querySelector('.cart-icon');
     const cartSidebar = document.getElementById('cartSidebar');
     const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+    const resultsContainer = document.getElementById('results-container');
     const overlay3 = document.querySelector('.overlay3');
 
     cartIcon.addEventListener('click', function (event) {
@@ -34,6 +35,18 @@ document.addEventListener('DOMContentLoaded', function () {
             addToCart(productId);
         });
     });
+
+    const observer = new MutationObserver(() => {
+        const addToCartButtons = document.querySelectorAll('.custom-buy-button');
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const productId = this.getAttribute('data-product-id');
+                addToCart(productId);
+            });
+        });
+    });
+    
+    observer.observe(resultsContainer, { childList: true, subtree: true });
 
     function addToCart(productId) {
         fetch('/add-to-cart/', {
@@ -157,6 +170,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function attachEventListenersToNewItems() {
+
+        document.querySelectorAll('.increase-quantity, .decrease-quantity, .remove-product').forEach(button => {
+            button.replaceWith(button.cloneNode(true));
+        });
+
         document.querySelectorAll('.increase-quantity').forEach(button => {
             button.addEventListener('click', function () {
                 const input = this.closest('.quantity-controls').querySelector('.quantity-input');

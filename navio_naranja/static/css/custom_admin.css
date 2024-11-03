@@ -4,9 +4,15 @@
     background-color: #495057;
     color: #ffffff;
     border: 1px solid #343a40;
+    width: 100% !important;
 }
 
 .selector .selector-filter {
     background-color: #495057;
     border: 1px solid #343a40;
+    box-sizing: border-box;
+}
+
+.col-sm-3.text-left {
+    max-width: 8rem !important;
 }

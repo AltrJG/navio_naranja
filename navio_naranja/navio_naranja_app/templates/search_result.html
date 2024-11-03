@@ -3,9 +3,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" >
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
+    <title>Búsqueda</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
@@ -45,7 +46,7 @@
             </li>
 
             <li class="nav__item">
-                <a href="#" class="nav__link">
+                <a href="/cart-detail" class="nav__link">
                     <i class='bx bx-cart' ></i>
                     <span class="cart-count" id="cartCount">0</span>
                     <span class="link__text">Carrito</span>
@@ -125,7 +126,7 @@
 
         <a href="#" class="cart-icon">
             <i class='bx bx-cart'></i>
-            <span class="cart-count" id="cartCount">0</span>
+            <span class="cart-count" id="cartCountDesk">0</span>
         </a>
         
 
@@ -143,23 +144,23 @@
             <button id="closeSidebarBtn">&times;</button> 
         </div>
         <div class="cart-sidebar-content">
-            {% if all_products %}
-                {% for product in all_products %}
-                    <div class="product-item-cart">
-                        <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="product-image-cart">
-                        <div class="product-details-cart">
-                            <div class="product-info">
-                                <p class="product-title-cart">{{ product.title }}</p>
-                                <p class="product-price-cart">${{ product.price|floatformat:2 }}</p>
-                            </div>
-                            <div class="quantity-controls">
-                                <i class='bx bx-trash remove-product' title="Eliminar producto"></i> 
-                                <button class="decrease-quantity">-</button>
-                                <input type="number" class="quantity-input" value="1" min="1" readonly />
-                                <button class="increase-quantity">+</button>
-                            </div>
+            {% if cart_items %}
+                {% for item in cart_items %}
+                <div class="product-item-cart" data-product-id="{{ item.product.id }}">
+                    <img src="{{ item.product.cover_image.url }}" alt="{{ item.product.title }}" class="product-image-cart">
+                    <div class="product-details-cart">
+                        <div class="product-info">
+                            <p class="product-title-cart">{{ item.product.title }}</p>
+                            <p class="product-price-cart">${{ item.product.price|floatformat:2 }}</p>
+                        </div>
+                        <div class="quantity-controls">
+                            <i class='bx bx-trash remove-product' title="Eliminar producto"></i> 
+                            <button class="decrease-quantity">-</button>
+                            <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" readonly />
+                            <button class="increase-quantity">+</button>
                         </div>
                     </div>
+                </div>
                 {% endfor %}
             {% else %}
                 <p>Tu carrito está vacío.</p>
@@ -207,14 +208,19 @@
                 <section class="custom-slider-section">
                     <div class="custom-card">
                         <div class="custom-card-image">
-                            <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="custom-album-cover">
+                            <a href="{% url 'product_detail' product.id %}" class="custom-card-link">
+                                <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="custom-album-cover">
+                            </a>
                         </div>
                         <div class="custom-card-content">
-                            <h3 class="custom-album-title">{{ product.title }}</h3>
-                            <p class="custom-artist-name">{{ product.artist }}</p>
-                            <p class="custom-price">Precio: ${{ product.price }}</p>
-                            <p class="custom-stock">Stock: {{ product.stock }} disponibles</p>
-                            <button class="custom-buy-button">Añadir al carrito</button>
+                            <a href="{% url 'product_detail' product.id %}" class="custom-card-link">
+                                <h3 class="custom-album-title">{{ product.title }}</h3>
+                                <p class="custom-artist-name">{{ product.artist }}</p>
+                                <p class="custom-price">Precio: ${{ product.price }}</p>
+                                <p class="custom-stock">Stock: {{ product.stock }} disponibles</p>
+                            </a>
+                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                            <button class="custom-buy-button" data-product-id="{{ product.id }}">Añadir al carrito</button>
                         </div>
                     </div>
                 </section>
@@ -231,6 +237,13 @@
     <script src="{% static 'js/right-side-menu.js' %}"></script>
     <script src="{% static 'js/suggestions.js' %}"></script>
     <script src="{% static 'js/search-criteria-update.js' %}"></script>
+    <script src="{% static 'js/cart.js' %}"></script>
     
+    <script>
+        function getCSRFToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+    </script>
+
 </body>
 </html>

@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" >
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
@@ -45,7 +46,7 @@
             </li>
 
             <li class="nav__item">
-                <a href="#" class="nav__link">
+                <a href="/cart-detail" class="nav__link">
                     <i class='bx bx-cart' ></i>
                     <span class="cart-count" id="cartCount">0</span>
                     <span class="link__text">Carrito</span>
@@ -201,19 +202,23 @@
                 <img src="{% static 'images/featured-shadow.webp' %}" alt="Destacados" class="featured-image">
             </div>
 
-            <div class="custom-carousel-container">
+            <div class="custom-carousel-container" id="results-container">
                 <div class="custom-carousel" id="custom-slider">
                     {% for product in featured %}
                     <section class="custom-slider-section">
                         <div class="custom-card">
                             <div class="custom-card-image">
-                                <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="custom-album-cover">
+                                <a href="{% url 'product_detail' product.id %}" class="custom-card-link">
+                                    <img src="{{ product.cover_image.url }}" alt="{{ product.title }}" class="custom-album-cover">
+                                </a>
                             </div>
                             <div class="custom-card-content">
-                                <h3 class="custom-album-title">{{ product.title }}</h3>
-                                <p class="custom-artist-name">{{ product.artist }}</p>
-                                <p class="custom-price">Precio: ${{ product.price }}</p>
-                                <p class="custom-stock">Stock: {{ product.stock }} disponibles</p>
+                                <a href="{% url 'product_detail' product.id %}" class="custom-card-link">
+                                    <h3 class="custom-album-title">{{ product.title }}</h3>
+                                    <p class="custom-artist-name">{{ product.artist }}</p>
+                                    <p class="custom-price">Precio: ${{ product.price }}</p>
+                                    <p class="custom-stock">Stock: {{ product.stock }} disponibles</p>
+                                </a>
                                 <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                                 <button class="custom-buy-button" data-product-id="{{ product.id }}">Añadir al carrito</button>
                             </div>

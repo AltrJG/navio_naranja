@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from .models import CarouselImage, Product, Genre, Song, Cart, CartItem
 import uuid
+import json
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 
@@ -44,6 +45,13 @@ def product_detail(request, product_id):
     product_genres = Genre.objects.filter(songs__products=product).distinct()
     products_by_genre = {genre.name: Product.objects.filter(songs__genres=genre).distinct() for genre in genres}
 
+    if request.user.is_authenticated:
+        cart = Cart.objects.filter(user=request.user).first()
+    else:
+        guest_id = request.session.get('guest_id')
+        cart = Cart.objects.filter(guest_id=guest_id).first()
+
+    cart_items = cart.items.all() if cart else []
 
     context = {
         'product': product,
@@ -51,6 +59,7 @@ def product_detail(request, product_id):
         'genres': genres,
         'product_genres': product_genres,
         'products_by_genre': products_by_genre,
+        'cart_items': cart_items,
     }
 
     return render(request, 'product_detail.html', context)
@@ -98,6 +107,14 @@ def search_result(request):
 
     product_types = Product.objects.values_list('product_type', flat=True).distinct()
 
+    if request.user.is_authenticated:
+        cart = Cart.objects.filter(user=request.user).first()
+    else:
+        guest_id = request.session.get('guest_id')
+        cart = Cart.objects.filter(guest_id=guest_id).first()
+
+    cart_items = cart.items.all() if cart else []
+
     context = {
         'query': query,
         'products': products_result,
@@ -107,12 +124,36 @@ def search_result(request):
         'selected_genres': selected_genres,
         'selected_types': selected_types,
         'product_types': product_types,
+        'cart_items': cart_items,
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return render(request, 'partials/products.html', context)
 
     return render(request, 'search_result.html', context)
+
+def cart_detail_view(request):
+
+    featured = Product.objects.filter(is_featured=True)
+    genres = Genre.objects.all()
+    products_by_genre = {genre.name: Product.objects.filter(songs__genres=genre).distinct() for genre in genres}
+
+    if request.user.is_authenticated:
+        cart = Cart.objects.filter(user=request.user).first()
+    else:
+        guest_id = request.session.get('guest_id')
+        cart = Cart.objects.filter(guest_id=guest_id).first()
+
+    cart_items = cart.items.all() if cart else []
+
+    context = {
+        'cart_items': cart_items,
+        'featured': featured,
+        'genres': genres,
+        'products_by_genre': products_by_genre,
+    }
+
+    return render(request, 'cart_detail.html', context)
 
 def add_to_cart(request):
     if request.method == 'POST':
@@ -171,6 +212,9 @@ def update_cart_item_quantity(request):
             quantity = max(1, int(quantity))
         except ValueError:
             return JsonResponse({'success': False, 'error': 'Cantidad no válida.'})
+        
+        print(f"ID del producto recibido: {product_id}")
+        print(f"Cantidad recibida: {quantity}")
 
         product = get_object_or_404(Product, id=product_id)
         cart = request.cart
@@ -178,12 +222,15 @@ def update_cart_item_quantity(request):
         cart_item = cart.items.filter(product=product).first()
 
         if cart_item:
+            print(f"Cantidad actual antes de actualizar: {cart_item.quantity}")
             stock = product.stock
             if quantity > stock:
                 quantity = stock
 
             cart_item.quantity = quantity
             cart_item.save()
+
+            print(f"Cantidad actualizada a: {cart_item.quantity}")
 
             return JsonResponse({
                 'success': True,
