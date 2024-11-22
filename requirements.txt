@@ -2,3 +2,4 @@ django
 pillow
 django-jazzmin
 django[argon2]
+qrcode
