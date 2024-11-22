@@ -252,35 +252,62 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeCart();
 });
 
+let activeMessageTimeout;
+
 function showMessage(message, isError = false) {
     const messageContainer = document.getElementById('message-container');
     const messageContent = document.getElementById('message-content');
 
+    if (activeMessageTimeout) {
+        clearTimeout(activeMessageTimeout);
+        activeMessageTimeout = null;
+    }
+
     messageContent.textContent = message;
     messageContainer.classList.toggle('error', isError);
 
+    const header = document.querySelector('header');
+    const headerHeight = header.offsetHeight;
+
+    if (header.classList.contains('header-hidden')) {
+        messageContainer.style.top = '0';
+    } else {
+        messageContainer.style.top = `${headerHeight}px`;
+    }
+
     messageContainer.style.display = 'block';
-    setTimeout(function() {
-        const header = document.querySelector('header');
-        const headerHeight = header.offsetHeight;
-
-        if (header.classList.contains('header-hidden')) {
-            messageContainer.style.top = '0';
-        } else {
-            messageContainer.style.top = `${headerHeight}px`;
-        }
-
+    requestAnimationFrame(() => {
         messageContainer.style.opacity = '1';
-    }, 100);
+    });
 
-    setTimeout(function() {
-        messageContainer.style.top = '-100px';
-        messageContainer.style.opacity = '0';
-
-        setTimeout(function() {
-            messageContainer.style.display = 'none';
-        }, 500);
+    activeMessageTimeout = setTimeout(() => {
+        hideMessage();
     }, 3000);
 }
 
+function hideMessage() {
+    const messageContainer = document.getElementById('message-container');
 
+    messageContainer.style.opacity = '0';
+    messageContainer.style.top = '-100px';
+
+    setTimeout(() => {
+        messageContainer.style.display = 'none';
+    }, 500);
+}
+
+window.addEventListener('scroll', () => {
+    const messageContainer = document.getElementById('message-container');
+    const header = document.querySelector('header');
+    const headerHeight = header.offsetHeight;
+
+    if (!messageContainer.style.opacity || messageContainer.style.opacity === '0') {
+        return;
+    }
+
+    if (header.classList.contains('header-hidden')) {
+        messageContainer.style.top = '0';
+    } else {
+        messageContainer.style.top = `${headerHeight}px`;
+    }
+});

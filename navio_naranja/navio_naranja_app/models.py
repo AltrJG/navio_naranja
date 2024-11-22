@@ -84,7 +84,7 @@ class Purchase(models.Model):
         return f"Purchase {self.serial_number}"
 
     def generate_qr_code(self):
-        qr_data = f"Purchase ID: {self.serial_number}\nItems: {', '.join(str(item) for item in self.items.all())}"
+        qr_data = str(self.serial_number)
         qr_image = qrcode.make(qr_data)
 
         qr_codes_dir = os.path.join(settings.MEDIA_ROOT, 'qr_codes')

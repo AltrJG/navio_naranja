@@ -1,0 +1,86 @@
+{% extends "admin/change_list.html" %}
+{% block content %}
+<h1>Escáner de códigos QR</h1>
+
+<br><br>
+
+<main>
+    <div id="reader"></div>
+    <div id="result"></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js" integrity="sha512-k/KAe4Yff9EUdYI5/IAHlwUswqeipP+Cp5qnrsUjTPCgl51La2/JhyyjNciztD7mWNKLSXci48m7cctATKfLlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<style>
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #reader {
+        width: 600px;
+    }
+    #result {
+        text-align: center;
+        font-size: 1.5rem;
+    }
+</style>
+
+<script>
+    const scanner = new Html5QrcodeScanner('reader', { 
+        qrbox: {
+            width: 250,
+            height: 250,
+        },  
+        fps: 10,
+    });
+
+    function success(result) {
+        document.getElementById('result').innerHTML = `
+            <h2>¡Compra Encontrada!</h2>
+            <p><strong>Número de Serie:</strong> ${result}</p>
+            <div id="purchase-info"></div>
+        `;
+
+        fetch('{% url "admin:scan_qr_code" %}', {
+        method: 'POST',
+        body: JSON.stringify({ serial_number: result }),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': '{{ csrf_token }}',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            document.getElementById('purchase-info').innerHTML = `<p style="color: red;">${data.error}</p>`;
+        } else {
+            let itemsHtml = '<ul>';
+            data.items.forEach(item => {
+                itemsHtml += `<li>${item.product_title} - Cantidad: ${item.quantity} - Precio: $${item.price}</li>`;
+            });
+            itemsHtml += '</ul>';
+            document.getElementById('purchase-info').innerHTML = `
+                <p><strong>Fecha de Compra:</strong> ${data.purchase.created_at}</p>
+                <p><strong>Productos Comprados:</strong></p>
+                ${itemsHtml}
+            `;
+        }
+    })
+    .catch(error => {
+        document.getElementById('purchase-info').innerHTML = '<p style="color: red;">Ocurrió un error al obtener los datos de la compra.</p>';
+        console.error(error);
+    });
+
+        scanner.clear();
+    }
+
+    function error(err) {
+        console.error(err);
+    }
+
+    scanner.render(success, error);
+</script>
+
+{% endblock %}
