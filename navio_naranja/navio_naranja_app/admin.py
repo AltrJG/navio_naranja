@@ -3,6 +3,8 @@ from django.urls import path
 from django.http import JsonResponse
 import json
 from .models import Purchase, PurchasedItem
+from django.core.exceptions import ValidationError
+from django import forms
 
 # Register your models here.
 from .models import CarouselImage
@@ -31,8 +33,33 @@ admin.site.register(Genre, GenreAdmin)
 admin.site.register(Song, SongAdmin)
 admin.site.register(Product, ProductAdmin)
 
-class QRCodeScannerAdmin(admin.ModelAdmin):
+class PurchasedItemForm(forms.ModelForm):
+    class Meta:
+        model = PurchasedItem
+        fields = ('product', 'quantity')
+
+    def clean_quantity(self):
+        quantity = self.cleaned_data.get('quantity')
+        product = self.cleaned_data.get('product')
+
+        if product and quantity:
+            if quantity > product.stock:
+                raise ValidationError(f"No hay suficiente stock. Solo hay {product.stock} unidades disponibles.")
+        return quantity
+
+class PurchasedItemInline(admin.TabularInline):
+    model = PurchasedItem
+    extra = 0
+    fields = ('product', 'quantity')
+    readonly_fields = ('purchase',)
+    form = PurchasedItemForm
+
+class PurchaseAdmin(admin.ModelAdmin):
     change_list_template = "admin/qr_code_scanner.html"
+    list_display = ('serial_number', 'created_at')
+    search_fields = ('serial_number',)
+    list_filter = ('created_at',)
+    inlines = [PurchasedItemInline]
 
     def get_urls(self):
         urls = super().get_urls()
@@ -70,5 +97,22 @@ class QRCodeScannerAdmin(admin.ModelAdmin):
                 return JsonResponse({"error": "No se encontró una compra con este número de serie."}, status=404)
         return JsonResponse({"error": "Método no permitido."}, status=405)
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['serial_number']
+        return []
 
-admin.site.register(Purchase, QRCodeScannerAdmin)
+    def save_model(self, request, obj, form, change):
+        if change:
+            for item in obj.items.all():
+                product = item.product
+                old_quantity = item.quantity
+                new_quantity = form.cleaned_data.get('quantity')
+
+                difference = new_quantity - old_quantity
+                product.stock -= difference
+                product.save()
+
+        super().save_model(request, obj, form, change)
+
+admin.site.register(Purchase, PurchaseAdmin)

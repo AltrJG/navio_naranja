@@ -1,38 +1,69 @@
 {% extends "admin/change_list.html" %}
 {% block content %}
-<h1>Escáner de códigos QR</h1>
+
+<br><br>
+<h1>Escáner de Códigos QR</h1>
+
+<main>
+    <button id="start-scanner" class="button">Iniciar Escáner</button>
+    <div id="reader" style="display: none;"></div>
+    <div id="result"></div>
+</main>
 
 <br><br>
 
-<main>
-    <div id="reader"></div>
-    <div id="result"></div>
-</main>
+<h1>Lista de órdenes de pago</h1>
+
+{{ block.super }}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js" integrity="sha512-k/KAe4Yff9EUdYI5/IAHlwUswqeipP+Cp5qnrsUjTPCgl51La2/JhyyjNciztD7mWNKLSXci48m7cctATKfLlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <style>
     main {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
+    }
+    h1{
+        text-align: center;
+        margin-bottom: 5rem;
     }
     #reader {
         width: 600px;
+        margin-bottom: 20px;
     }
     #result {
         text-align: center;
         font-size: 1.5rem;
     }
+    .button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        width: 100vw;
+        background-color: #f89900;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-bottom: 5rem;
+    }
+    .button:hover {
+        background-color: #cd7e00;
+    }
 </style>
 
 <script>
-    const scanner = new Html5QrcodeScanner('reader', { 
-        qrbox: {
-            width: 250,
-            height: 250,
-        },  
-        fps: 10,
+    let scanner;
+
+    document.getElementById('start-scanner').addEventListener('click', () => {
+        const readerElement = document.getElementById('reader');
+        readerElement.style.display = 'block';
+        
+        scanner = new Html5QrcodeScanner('reader', { 
+            qrbox: { width: 250, height: 250 },  
+            fps: 10,
+        });
+
+        scanner.render(success, error);
     });
 
     function success(result) {
@@ -43,35 +74,39 @@
         `;
 
         fetch('{% url "admin:scan_qr_code" %}', {
-        method: 'POST',
-        body: JSON.stringify({ serial_number: result }),
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': '{{ csrf_token }}',
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            document.getElementById('purchase-info').innerHTML = `<p style="color: red;">${data.error}</p>`;
-        } else {
-            let itemsHtml = '<ul>';
-            data.items.forEach(item => {
-                itemsHtml += `<li>${item.product_title} - Cantidad: ${item.quantity} - Precio: $${item.price}</li>`;
-            });
-            itemsHtml += '</ul>';
-            document.getElementById('purchase-info').innerHTML = `
-                <p><strong>Fecha de Compra:</strong> ${data.purchase.created_at}</p>
-                <p><strong>Productos Comprados:</strong></p>
-                ${itemsHtml}
-            `;
-        }
-    })
-    .catch(error => {
-        document.getElementById('purchase-info').innerHTML = '<p style="color: red;">Ocurrió un error al obtener los datos de la compra.</p>';
-        console.error(error);
-    });
+            method: 'POST',
+            body: JSON.stringify({ serial_number: result }),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': '{{ csrf_token }}',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('purchase-info').innerHTML = `<p style="color: red;">${data.error}</p>`;
+            } else {
+                let itemsHtml = '<ul>';
+                let total = 0;
+                data.items.forEach(item => {
+                    const itemTotal = item.quantity * item.price;
+                    total += itemTotal;
+                    itemsHtml += `<li>${item.product_title} - Cantidad: ${item.quantity} - Precio Unitario: $${item.price} - Total: $${itemTotal}</li>`;
+                });
+                itemsHtml += '</ul>';
+                document.getElementById('purchase-info').innerHTML = `
+                    <p><strong>Fecha de Compra:</strong> ${data.purchase.created_at}</p>
+                    <p><strong>Productos Comprados:</strong></p>
+                    ${itemsHtml}
+                    <p><strong>Total a Pagar:</strong> $${total}</p>
+                `;
+            }
+        })
+        .catch(error => {
+            document.getElementById('purchase-info').innerHTML = '<p style="color: red;">Ocurrió un error al obtener los datos de la compra.</p>';
+            console.error(error);
+        });
 
         scanner.clear();
     }
@@ -79,8 +114,6 @@
     function error(err) {
         console.error(err);
     }
-
-    scanner.render(success, error);
 </script>
 
 {% endblock %}
