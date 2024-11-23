@@ -79,6 +79,11 @@ class Cart(models.Model):
 class Purchase(models.Model):
     serial_number = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_collected = models.BooleanField(default=False)
+
+    def total_amount(self):
+        total = sum(item.quantity * item.product.price for item in self.items.all())
+        return total
 
     def __str__(self):
         return f"Purchase {self.serial_number}"
@@ -104,3 +109,13 @@ class PurchasedItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.title} (Purchase: {self.purchase.serial_number})"
+    
+
+class StockNotification(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='low_stock_notifications')
+    created_at = models.DateTimeField(auto_now_add=True)
+    threshold = models.PositiveIntegerField(default=10)
+    resolved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Stock bajo: {self.product.title} (Stock actual: {self.product.stock})"

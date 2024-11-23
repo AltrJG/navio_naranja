@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
 import json
-from .models import Purchase, PurchasedItem
+from .models import Purchase, PurchasedItem, StockNotification
 from django.core.exceptions import ValidationError
 from django import forms
 
@@ -50,16 +50,36 @@ class PurchasedItemForm(forms.ModelForm):
 class PurchasedItemInline(admin.TabularInline):
     model = PurchasedItem
     extra = 0
-    fields = ('product', 'quantity')
-    readonly_fields = ('purchase',)
+    fields = ('product', 'quantity', 'product_price', 'total_price')
+    readonly_fields = ('product_price', 'total_price')
     form = PurchasedItemForm
+
+    def product_price(self, obj):
+        return obj.product.price
+    product_price.short_description = 'Precio Unitario'
+
+    def total_price(self, obj):
+        return obj.product.price * obj.quantity
+    total_price.short_description = 'Total'
 
 class PurchaseAdmin(admin.ModelAdmin):
     change_list_template = "admin/qr_code_scanner.html"
-    list_display = ('serial_number', 'created_at')
+    list_display = ('serial_number', 'created_at', 'is_collected', 'total_amount')
     search_fields = ('serial_number',)
-    list_filter = ('created_at',)
+    list_filter = ('created_at', 'is_collected')
     inlines = [PurchasedItemInline]
+
+    exclude = ('created_at',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('serial_number', 'is_collected')
+        }),
+    )
+
+    def total_amount(self, obj):
+        return sum(item.quantity * item.product.price for item in obj.items.all())
+    total_amount.short_description = 'Total'
 
     def get_urls(self):
         urls = super().get_urls()
@@ -103,16 +123,26 @@ class PurchaseAdmin(admin.ModelAdmin):
         return []
 
     def save_model(self, request, obj, form, change):
-        if change:
-            for item in obj.items.all():
-                product = item.product
-                old_quantity = item.quantity
-                new_quantity = form.cleaned_data.get('quantity')
-
-                difference = new_quantity - old_quantity
-                product.stock -= difference
-                product.save()
-
         super().save_model(request, obj, form, change)
 
 admin.site.register(Purchase, PurchaseAdmin)
+
+@admin.register(StockNotification)
+class StockNotificationAdmin(admin.ModelAdmin):
+    list_display = ('product', 'created_at', 'threshold', 'resolved')
+    list_filter = ('resolved',)
+    actions = ['mark_as_resolved']
+
+    def mark_as_resolved(self, request, queryset):
+        queryset.update(resolved=True)
+        self.message_user(request, "Las notificaciones seleccionadas fueron marcadas como resueltas.")
+    mark_as_resolved.short_description = "Marcar como resueltas"
+
+class CustomAdminSite(admin.AdminSite):
+    def index(self, request, extra_context=None):
+        low_stock_notifications = StockNotification.objects.filter(resolved=False)
+        extra_context = extra_context or {}
+        extra_context['low_stock_notifications'] = low_stock_notifications
+        return super().index(request, extra_context)
+
+admin_site = CustomAdminSite()

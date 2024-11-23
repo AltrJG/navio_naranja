@@ -75,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'navio_naranja_app.context_processors.low_stock_notifications',
             ],
         },
     },
@@ -152,6 +153,19 @@ JAZZMIN_SETTINGS = {
     "copyright": "Navio Naranja",
     "show_ui_builder": False,
     "custom_css": "../static/css/custom_admin.css",
+
+    "topmenu_links": [
+        {"name": "Notificaciones de Stock", "url": "/admin/navio_naranja_app/stocknotification/", "permissions": ["auth.view_user"]},
+    ],
+    "custom_links": {
+        "navio_naranja_app": [
+            {
+                "name": "Bajo Stock",
+                "url": "/admin/navio_naranja_app/stocknotification/?resolved__exact=0",
+                "icon": "fas fa-exclamation-triangle",
+            },
+        ],
+    },
 }
 
 JAZZMIN_UI_TWEAKS = {

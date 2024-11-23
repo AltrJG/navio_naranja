@@ -1,0 +1,23 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+    {{ block.super }}
+    <div class="card">
+        <div class="card-header">
+            <h5>Notificaciones de Bajo Stock</h5>
+        </div>
+        <div class="card-body">
+            {% if low_stock_notifications %}
+                <ul>
+                    {% for notification in low_stock_notifications %}
+                        <li>
+                            {{ notification.product.name }}: Solo quedan {{ notification.product.stock }} unidades.
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No hay productos con bajo stock.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
