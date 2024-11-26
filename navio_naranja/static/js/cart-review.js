@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
             total += price * quantity;
         });
 
-        const totalAmount = document.getElementById('reviewTotalAmount');
+        const reviewTotalAmount = document.getElementById('reviewTotalAmount');
         reviewTotalAmount.textContent = `$${total.toFixed(2)}`;
     }
 
@@ -136,14 +136,27 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function initializeReviewCart() {
-        updateReviewCartCount();
-        updateReviewCartTotal();
-
-        const quantityInputs = document.querySelectorAll('.review-quantity-input');
-        quantityInputs.forEach(input => {
-            const productId = input.closest('.review-product-item').dataset.productId;
-            input.value = parseInt(input.value) || 1; // Asegura que haya al menos 1
+        const reviewCartItems = document.querySelectorAll('.review-product-item');
+        if (reviewCartItems.length === 0) {
+            reviewTotalAmount.textContent = '$0.00';
+            return;
+        }
+    
+        reviewCartItems.forEach(item => {
+            const input = item.querySelector('.review-quantity-input');
+            const priceElement = item.querySelector('.review-product-price');
+    
+            const quantity = parseInt(input.value) || 1;
+            input.value = quantity;
+    
+            const price = parseFloat(priceElement.textContent.replace('$', ''));
+            if (isNaN(price)) {
+                console.error('Precio inválido detectado:', priceElement.textContent);
+                return;
+            }
         });
+    
+        updateReviewCartTotal();
     }
 
     attachReviewEventListeners();
